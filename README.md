@@ -78,7 +78,6 @@
 
 ## To-do Notes
   + [ ] pdf merge
-  + [ ] pdf:image 分別數字後綴 or 共用數字後綴
   + [ ] 多線程
 
 ## Developer Notes

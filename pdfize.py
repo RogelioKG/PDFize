@@ -12,22 +12,43 @@ from toolkits.progress_bar import Pbar
 from toolkits.path_tool import *
 
 
-def pdf_to_img(
-    input_path: Path, output_path: Path, subdir_option: bool, ext: str, dpi: int
-) -> None:
-    """
+@click.group()
+def cli():
+    pass
 
-    Parameters
-    ----------
-    + `input_path` : Path
-        輸入路徑 (PDF)
-    + `output_path` : Path
-        輸出路徑 (image)
-    + `ext` : str
-        副檔名 (image)
-    + `dpi` : int
-        dots per inch
-    """
+
+@cli.command("pdf-to-img", short_help="Convert PDF to image")
+@click.option(
+    "-S",
+    "--subdir/--no-subdir",
+    "subdir_option",
+    help="If this flag is set, use the original PDF name as the name of subdirectory. The output path can only be directory.",
+)
+@click.option(
+    "-d", "--dpi", "dpi", type=int, default=100, show_default=True, help="DPI of image"
+)
+@click.option(
+    "-e",
+    "--extension",
+    "ext",
+    default="png",
+    show_default=True,
+    help="File extension of image",
+)
+@click.option(
+    "-o",
+    "--output-path",
+    "output_path",
+    required=True,
+    help="Output directory or filename",
+)
+@click.argument("input_path", nargs=1, required=True)
+def pdf_to_img(
+    input_path: str, output_path: str, subdir_option: bool, ext: str, dpi: int
+):
+    input_path: Path = Path(input_path)
+    output_path: Path = Path(output_path)
+
     if subdir_option:  # -S 選項
         assert not output_path.suffix  # 輸出路徑限定為目錄
 
@@ -55,16 +76,19 @@ def pdf_to_img(
                     pbar.update(1)
 
 
-def img_to_pdf(input_path: Path, output_path: Path) -> None:
-    """image 轉 PDF
+@cli.command("img-to-pdf", short_help="Convert image to PDF")
+@click.option(
+    "-o",
+    "--output-path",
+    "output_path",
+    required=True,
+    help="Output filename",
+)
+@click.argument("input_path", nargs=1, required=True)
+def img_to_pdf(input_path: str, output_path: str):
+    input_path: Path = Path(input_path)
+    output_path: Path = Path(output_path)
 
-    Parameters
-    ----------
-    + `input_path` : Path
-        輸入路徑 (image)
-    + `output_path` : Path
-        輸出路徑 (PDF)
-    """
     with fitz.open() as pdf:  # 空檔案
         input_files = list(get_files(input_path))
         # 進度條 (顏色：pink) (單位：處理圖片數)
@@ -78,61 +102,7 @@ def img_to_pdf(input_path: Path, output_path: Path) -> None:
         pdf.save(output_path)
 
 
-@click.group()
-def cli():
-    pass
-
-
-@cli.command("pdf-to-img")
-@click.option(
-    "-S",
-    "--subdir/--no-subdir",
-    "subdir_option",
-    help="If this flag is set, use the original PDF name as the name of subdirectory. The output path can only be directory.",
-)
-@click.option(
-    "-d", "--dpi", "dpi", type=int, default=100, show_default=True, help="DPI of image"
-)
-@click.option(
-    "-e",
-    "--extension",
-    "ext",
-    default="png",
-    show_default=True,
-    help="File extension of image",
-)
-@click.option(
-    "-o",
-    "--output-path",
-    "output_path",
-    required=True,
-    help="Output directory or filename",
-)
-@click.argument("input_path", nargs=1, required=True)
-def pdf_to_img_command(
-    input_path: str, output_path: str, subdir_option: bool, ext: str, dpi: int
-):
-    input_path = Path(input_path)
-    output_path = Path(output_path)
-    pdf_to_img(input_path, output_path, subdir_option, ext, dpi)
-
-
-@cli.command("img-to-pdf")
-@click.option(
-    "-o",
-    "--output-path",
-    "output_path",
-    required=True,
-    help="Output filename",
-)
-@click.argument("input_path", nargs=1, required=True)
-def img_to_pdf_command(input_path: str, output_path: str):
-    input_path = Path(input_path)
-    output_path = Path(output_path)
-    img_to_pdf(input_path, output_path)
-
-
-@cli.command("split")
+@cli.command("split", short_help="Split PDF")
 @click.option(
     "-o",
     "--output-path",
@@ -149,7 +119,7 @@ def img_to_pdf_command(input_path: str, output_path: str):
     help="The range of pages to copy, using 1-based indexing. The value '-1' denotes the last page. If the from-page value is greater than the to-page value, the result will be in reverse order.",
 )
 @click.argument("input_path", nargs=1, required=True)
-def pdf_split_command(input_path: str, output_path: str, r: str):
+def pdf_split(input_path: str, output_path: str, r: str):
     assert input_path.endswith(".pdf") and output_path.endswith(".pdf")  # 斷言皆為 PDF
     from_page, to_page = map(int, r.split(","))
 

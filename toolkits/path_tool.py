@@ -21,7 +21,6 @@ def get_files(path: Path) -> Generator[Path, Any, None]:
         yield path
     elif path.is_dir():  # 如果路徑存在且為目錄
         yield from path.iterdir()  # 生成器委託
-        # NOTE iterdir 如果遇到子目錄的話？
 
 
 def try_create_dir(path: Path) -> None:
