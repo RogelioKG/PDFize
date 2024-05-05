@@ -28,9 +28,9 @@ def pdf_to_img(
     + `dpi` : int
         dots per inch
     """
-    if subdir_option: # -S 選項
-        assert not output_path.suffix # 輸出路徑限定為目錄
-    
+    if subdir_option:  # -S 選項
+        assert not output_path.suffix  # 輸出路徑限定為目錄
+
     try_create_dir(output_path)
 
     if output_path.suffix:  # 如果輸出路徑為檔案
@@ -42,7 +42,7 @@ def pdf_to_img(
     for input_file in get_files(input_path):  # 遍歷每一份 PDF
         if not output_path.suffix:  # 如果輸出路徑為目錄
             output_base = output_path / input_file.stem
-            if subdir_option: # -S 選項
+            if subdir_option:  # -S 選項
                 try_create_dir(output_base)
                 output_base = output_base / input_file.stem
         with fitz.open(input_file) as pdf:
@@ -78,13 +78,12 @@ def img_to_pdf(input_path: Path, output_path: Path) -> None:
         pdf.save(output_path)
 
 
-@click.command()
-@click.option(
-    "-I/ ",
-    "--img-to-pdf/--pdf-to-img",
-    "input_is_img",
-    help="If this flag is set, convert image to PDF; otherwise, convert PDF to image.",
-)
+@click.group()
+def cli():
+    pass
+
+
+@cli.command("pdf-to-img")
 @click.option(
     "-S",
     "--subdir/--no-subdir",
@@ -110,21 +109,28 @@ def img_to_pdf(input_path: Path, output_path: Path) -> None:
     help="Output directory or filename",
 )
 @click.argument("input_path", nargs=1, required=True)
-def pdf_tool(
-    input_path: str,
-    output_path: str,
-    input_is_img: bool,
-    subdir_option: bool,
-    ext: str,
-    dpi: int,
+def pdf_to_img_command(
+    input_path: str, output_path: str, subdir_option: bool, ext: str, dpi: int
 ):
     input_path = Path(input_path)
     output_path = Path(output_path)
-    if input_is_img:  # 如果輸入路徑給定 image
-        img_to_pdf(input_path, output_path)
-    else:  # 如果輸入路徑給定 PDF
-        pdf_to_img(input_path, output_path, subdir_option, ext, dpi)
+    pdf_to_img(input_path, output_path, subdir_option, ext, dpi)
+
+
+@cli.command("img-to-pdf")
+@click.option(
+    "-o",
+    "--output-path",
+    "output_path",
+    required=True,
+    help="Output filename",
+)
+@click.argument("input_path", nargs=1, required=True)
+def img_to_pdf_command(input_path: str, output_path: str):
+    input_path = Path(input_path)
+    output_path = Path(output_path)
+    img_to_pdf(input_path, output_path)
 
 
 if __name__ == "__main__":
-    pdf_tool()
+    cli()
