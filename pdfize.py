@@ -67,7 +67,7 @@ def pdf_to_img(
                 try_create_dir(output_base)
                 output_base = output_base / input_file.stem
         with fitz.open(input_file) as pdf:
-            # 進度條 (顏色：green) (單位：處理頁數)
+            # 進度條
             with Pbar(total=pdf.page_count, unit="page") as pbar:
                 for count, page in enumerate(pdf.pages(), start=1):  # count 為頁數後綴
                     pixmap = page.get_pixmap(dpi=dpi)
@@ -91,7 +91,7 @@ def img_to_pdf(input_path: str, output_path: str):
 
     with fitz.open() as pdf:  # 空檔案
         input_files = list(get_files(input_path))
-        # 進度條 (顏色：pink) (單位：處理圖片數)
+        # 進度條
         with Pbar(total=len(input_files), unit="image") as pbar:
             for input_file in input_files:  # 遍歷每一張 image
                 with fitz.open(input_file) as img:  # 開啟 image
@@ -132,10 +132,12 @@ def pdf_split(input_path: str, output_path: str, r: str):
         assert 0 <= to_page < old_pdf.page_count
         # PDF 拆分
         total_pages = abs(to_page - from_page) + 1
+        # 進度條
         with Pbar(total=total_pages, unit="page") as pbar:
             new_pdf.insert_pdf(old_pdf, from_page, to_page)
             new_pdf.save(output_path)
             pbar.update(total_pages)
+            new_pdf
 
 
 if __name__ == "__main__":

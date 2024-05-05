@@ -46,7 +46,12 @@
     pdfize "input.pdf" -r 5,2 -o "output.pdf"
     pdfize "input.pdf" -r -1,2 -o "output.pdf"
     ```
++ `merge` : PDF 合併
 
+  + `-o` | `--output-file` : 輸出檔案
+    ```bash
+    pdfize "pdfdir/" -o "output.pdf"
+    ```
 
 ## Behaviors
 
