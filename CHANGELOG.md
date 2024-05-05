@@ -10,6 +10,7 @@ All notable changes to this project will be documented in this file.
 + **Feature** : `-S` option
 + **Feature** : command group
 + **Feature** : split PDF
++ **Feature** : merge PDF
 
 
 ## [0.1.0] - 2024-05-04
