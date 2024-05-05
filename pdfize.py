@@ -88,7 +88,7 @@ def cli():
     "-S",
     "--subdir/--no-subdir",
     "subdir_option",
-    help="When converting PDF to image, if this flag is set, use the original PDF name as the name of subdirectory. The output path can only be directory.",
+    help="If this flag is set, use the original PDF name as the name of subdirectory. The output path can only be directory.",
 )
 @click.option(
     "-d", "--dpi", "dpi", type=int, default=100, show_default=True, help="DPI of image"
