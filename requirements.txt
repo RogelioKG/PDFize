@@ -1,0 +1,6 @@
+click
+colorama
+Pillow
+pyinstaller
+PyMuPDF
+tqdm

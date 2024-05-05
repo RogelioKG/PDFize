@@ -1,0 +1,19 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Environments
+.venv
+
+# Files
+scripts/auto-test-clear.bat
+scripts/auto-test-run.bat
+
+# Directories
+auto-testing/
+
+# Pyinstaller
+build/
+dist/
+*.spec
