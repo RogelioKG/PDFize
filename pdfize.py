@@ -140,5 +140,28 @@ def pdf_split(input_path: str, output_path: str, r: str):
             new_pdf
 
 
+@cli.command("merge", short_help="Merge PDF")
+@click.option(
+    "-o",
+    "--output-path",
+    "output_path",
+    required=True,
+    help="Output filename",
+)
+@click.argument("input_path", nargs=1, required=True)
+def pdf_merge(input_path: str, output_path: str):
+    input_path: Path = Path(input_path)
+    output_path: Path = Path(output_path)
+
+    with fitz.open() as new_pdf:  # 空檔案
+        input_files = list(get_files(input_path))
+        with Pbar(total=len(input_files), unit="pdf") as pbar:
+            for input_file in input_files:  # 遍歷每一份 PDF
+                with fitz.open(input_file) as old_pdf:
+                    new_pdf.insert_pdf(old_pdf)  # 檔案附加 PDF
+                pbar.update(1)
+        new_pdf.save(output_path)
+
+
 if __name__ == "__main__":
     cli()
