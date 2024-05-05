@@ -7,8 +7,7 @@ __pycache__/
 .venv
 
 # Files
-scripts/auto-test-clear.bat
-scripts/auto-test-run.bat
+scripts/auto-test-*.bat
 
 # Directories
 auto-testing/
