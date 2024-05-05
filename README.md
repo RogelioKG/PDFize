@@ -7,6 +7,11 @@
   pdfize -I "imgdir/" -o "output.pdf"
   ```
 
++ `-S/ ` | `--subdir` : PDF 轉 image 時，以原 PDF 名稱作為子目錄，輸出路徑限定目錄 (flag)
+  ```bash
+  pdfize -S "pdfdir/" -o "result/"
+  ```
+
 + `-d` | `--dpi` : 指定 image 解析度 (type = int)
   ```bash
   pdfize "input.pdf" -o "output.jpeg" -d 400
@@ -29,11 +34,11 @@
     + 表現行為同 1 PDF : m image
   + 1 PDF : m images
     + 路徑：檔案:檔案 (image 主名稱與副檔名都已指定好)
-    + 路徑：檔案:目錄 (image 主名稱為原 pdf 檔名。-e 指定副檔名，預設 png)
+    + 路徑：檔案:目錄 (image 主名稱為原 pdf 檔名。) (-e 指定副檔名，預設 png)
   + m PDFs : 1 image
     + X
   + m PDFs : m images
-    + 路徑：目錄:目錄 (image 主名稱為原 pdf 檔名。-e 指定副檔名，預設 png) (-S 子目錄 flag 選項)
+    + 路徑：目錄:目錄 (image 主名稱為原 pdf 檔名。)(-e 指定副檔名，預設 png) (-S 子目錄 flag 選項)
 + image : PDF
   + 1 image : 1 PDF
     + 路徑：檔案:檔案
@@ -51,7 +56,7 @@
   4. `tqdm`
 
 ## To-do Notes
-  + [ ] -S 選項 (pdf:image 根據 pdf 放子目錄)
+  + [x] -S 選項 (pdf:image 根據 pdf 放子目錄)
   + [ ] pdf 拆分
   + [ ] pdf:image 分別數字後綴 or 共用數字後綴
   + [ ] 多線程
