@@ -63,10 +63,9 @@ def img_to_pdf(input_path: Path, output_path: Path) -> None:
             for input_file in input_files:  # 遍歷每一張 image
                 with fitz.open(input_file) as img:  # 開啟 image
                     pdfbytes = img.convert_to_pdf()  # image 轉 PDF
-                    imgpdf = fitz.open("pdf", pdfbytes)
+                with fitz.open("pdf", pdfbytes) as imgpdf: # 開啟 PDF
                     pdf.insert_pdf(imgpdf)  # 空檔案附加一份 PDF
-                    imgpdf.close()
-                    pbar.update(1)
+                pbar.update(1)
         pdf.save(output_path)
 
 
