@@ -12,7 +12,9 @@ from toolkits.progress_bar import Pbar
 from toolkits.path_tool import *
 
 
-def pdf_to_img(input_path: Path, output_path: Path, ext: str, dpi: int) -> None:
+def pdf_to_img(
+    input_path: Path, output_path: Path, subdir_option: bool, ext: str, dpi: int
+) -> None:
     """
 
     Parameters
@@ -26,7 +28,11 @@ def pdf_to_img(input_path: Path, output_path: Path, ext: str, dpi: int) -> None:
     + `dpi` : int
         dots per inch
     """
+    if subdir_option: # -S 選項
+        assert not output_path.suffix # 輸出路徑限定為目錄
+    
     try_create_dir(output_path)
+
     if output_path.suffix:  # 如果輸出路徑為檔案
         output_base = output_path.parent / output_path.stem
         output_ext = output_path.suffix
@@ -35,7 +41,10 @@ def pdf_to_img(input_path: Path, output_path: Path, ext: str, dpi: int) -> None:
 
     for input_file in get_files(input_path):  # 遍歷每一份 PDF
         if not output_path.suffix:  # 如果輸出路徑為目錄
-            output_base = output_path / input_file.stem  # image 主名稱為其所屬 pdf 名稱
+            output_base = output_path / input_file.stem
+            if subdir_option: # -S 選項
+                try_create_dir(output_base)
+                output_base = output_base / input_file.stem
         with fitz.open(input_file) as pdf:
             # 進度條 (顏色：green) (單位：處理頁數)
             with Pbar(total=pdf.page_count, unit="page") as pbar:
@@ -63,7 +72,7 @@ def img_to_pdf(input_path: Path, output_path: Path) -> None:
             for input_file in input_files:  # 遍歷每一張 image
                 with fitz.open(input_file) as img:  # 開啟 image
                     pdfbytes = img.convert_to_pdf()  # image 轉 PDF
-                with fitz.open("pdf", pdfbytes) as imgpdf: # 開啟 PDF
+                with fitz.open("pdf", pdfbytes) as imgpdf:  # 開啟 PDF
                     pdf.insert_pdf(imgpdf)  # 空檔案附加一份 PDF
                 pbar.update(1)
         pdf.save(output_path)
@@ -75,6 +84,12 @@ def img_to_pdf(input_path: Path, output_path: Path) -> None:
     "--img-to-pdf/--pdf-to-img",
     "input_is_img",
     help="If this flag is set, convert image to PDF; otherwise, convert PDF to image.",
+)
+@click.option(
+    "-S",
+    "--subdir/--no-subdir",
+    "subdir_option",
+    help="When converting PDF to image, if this flag is set, use the original PDF name as the name of subdirectory. The output path can only be directory.",
 )
 @click.option(
     "-d", "--dpi", "dpi", type=int, default=100, show_default=True, help="DPI of image"
@@ -95,13 +110,20 @@ def img_to_pdf(input_path: Path, output_path: Path) -> None:
     help="Output directory or filename",
 )
 @click.argument("input_path", nargs=1, required=True)
-def pdf_tool(input_path: str, output_path: str, input_is_img: bool, ext: str, dpi: int):
+def pdf_tool(
+    input_path: str,
+    output_path: str,
+    input_is_img: bool,
+    subdir_option: bool,
+    ext: str,
+    dpi: int,
+):
     input_path = Path(input_path)
     output_path = Path(output_path)
     if input_is_img:  # 如果輸入路徑給定 image
         img_to_pdf(input_path, output_path)
     else:  # 如果輸入路徑給定 PDF
-        pdf_to_img(input_path, output_path, ext, dpi)
+        pdf_to_img(input_path, output_path, subdir_option, ext, dpi)
 
 
 if __name__ == "__main__":
