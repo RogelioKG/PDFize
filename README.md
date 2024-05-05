@@ -2,30 +2,34 @@
 
 ## Spec
 
-+ `-I/ ` | `--img-to-pdf/--pdf-to-img` : image 轉 PDF (flag)
-  ```bash
-  pdfize -I "imgdir/" -o "output.pdf"
-  ```
++ `img-to-pdf` : image 轉 PDF (command)
 
-+ `-S/ ` | `--subdir` : PDF 轉 image 時，以原 PDF 名稱作為子目錄，輸出路徑限定目錄 (flag)
-  ```bash
-  pdfize -S "pdfdir/" -o "result/"
-  ```
+  + `-o` | `--output-file` : 輸出檔案 (type = str)
+    ```bash
+    pdfize "input.jpeg" -o "output.pdf"
+    ```
 
-+ `-d` | `--dpi` : 指定 image 解析度 (type = int)
-  ```bash
-  pdfize "input.pdf" -o "output.jpeg" -d 400
-  ```
++ `pdf-to-img` : PDF 轉 image (command)
 
-+ `-e` | `--extension` : 指定 image 檔名
-  ```bash
-  pdfize "input.pdf" -o "imgdir/" -e webp
-  ```
+  + `-S/ ` | `--subdir` : 以原 PDF 名稱作為子目錄，輸出路徑限定目錄 (flag)
+    ```bash
+    pdfize -S "pdfdir/" -o "result/"
+    ```
 
-+ `-o` | `--output-file` : 輸出檔案 (type = str)
-  ```bash
-  pdfize "input.pdf" -o "output.jpeg"
-  ```
+  + `-d` | `--dpi` : 指定 image 解析度 (type = int)
+    ```bash
+    pdfize "input.pdf" -o "output.jpeg" -d 400
+    ```
+
+  + `-e` | `--extension` : 指定 image 檔名
+    ```bash
+    pdfize "input.pdf" -o "imgdir/" -e webp
+    ```
+
+  + `-o` | `--output-file` : 輸出檔案 (type = str)
+    ```bash
+    pdfize "input.pdf" -o "output.jpeg"
+    ```
 
 ## Behaviors
 
@@ -56,7 +60,6 @@
   4. `tqdm`
 
 ## To-do Notes
-  + [x] -S 選項 (pdf:image 根據 pdf 放子目錄)
   + [ ] pdf 拆分
   + [ ] pdf:image 分別數字後綴 or 共用數字後綴
   + [ ] 多線程
