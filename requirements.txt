@@ -1,5 +1,4 @@
 click
-colorama
 Pillow
 pyinstaller
 PyMuPDF
