@@ -132,5 +132,41 @@ def img_to_pdf_command(input_path: str, output_path: str):
     img_to_pdf(input_path, output_path)
 
 
+@cli.command("split")
+@click.option(
+    "-o",
+    "--output-path",
+    "output_path",
+    required=True,
+    help="Output filename",
+)
+@click.option(
+    "-r",
+    "--range",
+    "r",
+    default="1,-1",
+    show_default=True,
+    help="The range of pages to copy, using 1-based indexing. The value '-1' denotes the last page. If the from-page value is greater than the to-page value, the result will be in reverse order.",
+)
+@click.argument("input_path", nargs=1, required=True)
+def pdf_split_command(input_path: str, output_path: str, r: str):
+    assert input_path.endswith(".pdf") and output_path.endswith(".pdf")  # 斷言皆為 PDF
+    from_page, to_page = map(int, r.split(","))
+
+    with fitz.open(input_path) as old_pdf, fitz.open() as new_pdf:
+        # 1-base -> 0-base
+        from_page = from_page - 1 if from_page != -1 else old_pdf.page_count - 1
+        to_page = to_page - 1 if to_page != -1 else old_pdf.page_count - 1
+        # 斷言合理頁數範圍
+        assert 0 <= from_page < old_pdf.page_count
+        assert 0 <= to_page < old_pdf.page_count
+        # PDF 拆分
+        total_pages = abs(to_page - from_page) + 1
+        with Pbar(total=total_pages, unit="page") as pbar:
+            new_pdf.insert_pdf(old_pdf, from_page, to_page)
+            new_pdf.save(output_path)
+            pbar.update(total_pages)
+
+
 if __name__ == "__main__":
     cli()
