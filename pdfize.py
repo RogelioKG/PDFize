@@ -137,7 +137,6 @@ def pdf_split(input_path: str, output_path: str, r: str):
             new_pdf.insert_pdf(old_pdf, from_page, to_page)
             new_pdf.save(output_path)
             pbar.update(total_pages)
-            new_pdf
 
 
 @cli.command("merge", short_help="Merge PDF")
