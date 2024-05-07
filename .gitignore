@@ -7,10 +7,10 @@ __pycache__/
 .venv
 
 # Files
-scripts/auto-test-*.bat
+scripts/auto-test/*.bat
 
 # Directories
-auto-testing/
+tests/
 
 # Pyinstaller
 build/
