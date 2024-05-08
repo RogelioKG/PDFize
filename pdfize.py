@@ -116,7 +116,7 @@ def img_to_pdf(input_path: str, output_path: str):
     "r",
     default="1,-1",
     show_default=True,
-    help="The range of pages to copy, using 1-based indexing. The value '-1' denotes the last page. If the from-page value is greater than the to-page value, the result will be in reverse order.",
+    help="The range of pages to copy, using 1-based indexing. If the from-page index is greater than the to-page index, the result will be in reverse order. Note: '-1' is a special value that will be interpreted as the last page's index.",
 )
 @click.argument("input_path", nargs=1, required=True)
 def pdf_split(input_path: str, output_path: str, r: str):
