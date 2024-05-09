@@ -1,5 +1,15 @@
 # PDFize
 
+## Breif
+純粹練習 git workflow 與嘗試寫寫看 CLI tool
+
+## Third Party Library
+  1. `PyMuPDF`
+  2. `Pillow`
+  3. `click`
+  4. `tqdm`
+  5. `pyinstaller`
+
 ## Spec
 
 + `img-to-pdf` : image 轉 PDF
@@ -75,15 +85,7 @@
   + m images : m PDFs
     + X
 
-## Third Party Library
-  1. `PyMuPDF`
-  2. `Pillow`
-  3. `click`
-  4. `tqdm`
-
 ## To-do Notes
-  + [ ] pdf merge
   + [ ] 多線程
 
 ## Developer Notes
-<!-- https://www.cnblogs.com/eliwang/p/16230381.html -->
