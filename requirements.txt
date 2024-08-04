@@ -1,0 +1,5 @@
+click
+Pillow
+pyinstaller
+PyMuPDF
+tqdm
