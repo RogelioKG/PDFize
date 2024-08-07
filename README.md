@@ -1,8 +1,5 @@
 # PDFize
 
-## Breif
-純粹練習 git workflow 與嘗試寫寫看 CLI tool
-
 ## Third Party Library
   1. `PyMuPDF`
   2. `Pillow`
@@ -10,68 +7,71 @@
   4. `tqdm`
   5. `pyinstaller`
 
-## Caution
-+ 目錄結尾必須是 `/` 
+## Help
 
-## Spec
++ general options
 
-+ `img-to-pdf` : image 轉 PDF
+  + `--pbar/--no-pbar` : 開啟命令行進度條 (flag)
 
-  + `-o` | `--output` : 指定 pdf 檔案名稱
-    ```bash
-    pdfize img-to-pdf "input.jpeg" -o "output.pdf"
-    pdfize img-to-pdf "images_dir/" -o "output.pdf"
-    ```
++ command
 
-+ `pdf-to-img` : PDF 轉 image
+  + `img-to-pdf` : image 轉 PDF
 
-  + `-d` | `--dpi` : 指定 image 解析度 (預設: 100)
-    ```bash
-    pdfize pdf-to-img "input.pdf" -o "output/" -d 400
-    ```
+    + `-o` | `--output` : 指定 pdf 檔案名稱
+      ```bash
+      pdfize img-to-pdf "input.jpeg" -o "output.pdf"
+      pdfize img-to-pdf "images_dir/" -o "output.pdf"
+      ```
 
-  + `-f` | `--format` : 指定 image 格式 (預設: png)
-    ```bash
-    pdfize pdf-to-img "input.pdf" -o "imgdir/" -e "webp"
-    ```
+  + `pdf-to-img` : PDF 轉 image
 
-  + `-n` | `--name` : 指定 image 主名稱 (預設: 同輸入 pdf 名稱)
-    ```bash
-    pdfize pdf-to-img "input.pdf" -o "imgdir/" -n "output"
-    ```
+    + `-d` | `--dpi` : 指定 image 解析度 (預設: 100)
+      ```bash
+      pdfize pdf-to-img "input.pdf" -o "output/" -d 400
+      ```
 
-  + `-o` | `--output` : 指定 image 目錄名稱
-    ```bash
-    pdfize pdf-to-img "input.pdf" -o "imgdir/"
-    ```
+    + `-f` | `--format` : 指定 image 格式 (預設: png)
+      ```bash
+      pdfize pdf-to-img "input.pdf" -o "imgdir/" -e "webp"
+      ```
 
-  + `-S/ ` | `--subdir` : 有多個 pdf 時，以原 pdf 名稱作為子目錄 (flag)
-    ```bash
-    pdfize pdf-to-img "pdfs_dir/" -o "result/" -S 
-    ```
+    + `-n` | `--name` : 指定 image 主名稱 (預設: 同輸入 pdf 名稱)
+      ```bash
+      pdfize pdf-to-img "input.pdf" -o "imgdir/" -n "output"
+      ```
 
-+ `split` : PDF 拆分
+    + `-o` | `--output` : 指定 image 目錄名稱
+      ```bash
+      pdfize pdf-to-img "input.pdf" -o "imgdir/"
+      ```
 
-  + `-o` | `--output` : 輸出 pdf 檔案
-    ```bash
-    pdfize split "input.pdf" -r 2,5 -o "output.pdf"
-    ```
+    + `--subdir` : 有多個 pdf 時，以原 pdf 名稱作為子目錄 (flag)
+      ```bash
+      pdfize pdf-to-img "pdfs_dir/" -o "result/" --subdir
+      ```
 
-  + `-r` | `--range` : 頁數範圍 (預設 : 1,-1)
-    > 支援負數索引 (如 -1 代表最後一頁)。若 from 頁數比 to 頁數後面，表示倒序。
-    ```bash
-    pdfize split "input.pdf" -r 2,5 -o "output.pdf"
-    pdfize split "input.pdf" -r 2,-1 -o "output.pdf"
-    pdfize split "input.pdf" -r 5,2 -o "output.pdf"
-    pdfize split "input.pdf" -r -2,2 -o "output.pdf"
-    ```
+  + `split` : PDF 拆分
 
-+ `merge` : PDF 合併
+    + `-o` | `--output` : 輸出 pdf 檔案
+      ```bash
+      pdfize split "input.pdf" -r 2 5 -o "output.pdf"
+      ```
 
-  + `-o` | `--output` : 輸出檔案
-    ```bash
-    pdfize merge "pdfs_dir/" -o "output.pdf"
-    ```
+    + `-r` | `--range` : 頁數範圍
+      > 支援負數索引 (如 -1 代表最後一頁)。若 from 頁數比 to 頁數後面，表示倒序。
+      ```bash
+      pdfize split "input.pdf" -r 2 5 -o "output.pdf"
+      pdfize split "input.pdf" -r 2 -1 -o "output.pdf"
+      pdfize split "input.pdf" -r 5 2 -o "output.pdf"
+      pdfize split "input.pdf" -r -2 2 -o "output.pdf"
+      ```
+
+  + `merge` : PDF 合併
+
+    + `-o` | `--output` : 輸出檔案
+      ```bash
+      pdfize merge "pdfs_dir/" -o "output.pdf"
+      ```
 
 ## Behaviors
 
@@ -95,7 +95,8 @@
     + x
 
 ## To-do Notes
-  + [ ] 多線程
+  + [ ] prompt
+  + [ ] multi threading
   + [ ] GUI
 
 ## Developer Notes
