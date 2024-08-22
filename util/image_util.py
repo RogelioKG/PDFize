@@ -8,7 +8,6 @@ from pathlib import Path
 
 # local library
 from .path_util import *
-from .pdf_util import PdfProcessor
 from .progress_bar import Pbar, NoPbar
 
 
@@ -26,11 +25,11 @@ class ImageProcessor:
         self.path = Path(path)
         self.pbar_class = pbar_class
 
-    def to_pdf(self, pdf: PdfProcessor):
+    def to_pdf(self, pdf: Path):
         """
         將 image 轉為 pdf
         """
-        assert pdf.path.suffix == ".pdf"
+        assert pdf.suffix == ".pdf"
 
         with fitz.open() as pdf_file:  # 空檔案
             image_paths = tuple()
@@ -50,4 +49,4 @@ class ImageProcessor:
                         pdf_file.insert_pdf(one_pdf)  # 空檔案附加一頁 PDF
                     pbar.update(1)
 
-            pdf_file.save(pdf.path)
+            pdf_file.save(pdf)

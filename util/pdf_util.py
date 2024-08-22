@@ -53,7 +53,7 @@ class PdfProcessor:
 
     def to_images(
         self,
-        image: ImageProcessor,
+        image: Path,
         dpi: int,
         format: str,
         name: str | None,
@@ -63,38 +63,61 @@ class PdfProcessor:
         """
         將 pdf 轉為 image
         """
-        # 如果有 name
-        #   如果輸入是目錄 : (image.path / name)
-        #       如果有 subdir 選項 : (image.path / name / name)
-        #   如果輸入是檔案 : (image.path / name)
-        # 如果沒有 name
-        #   如果輸入是目錄 : (image.path / pdf_path.stem)
-        #       如果有 subdir 選項 : (image.path / pdf_path.stem / pdf_path.stem)
-        #   如果輸入是檔案 : (image.path / self.path.stem)
+        image_main_path = self._try_build_image_main_path(image, name, subdir)
+        for pdf_path in get_filepaths(self.path, suffix=".pdf"):  # 遍歷每一份 PDF
+            if image_main_path is None:
+                image_main_path = self._build_image_main_path(
+                    image, pdf_path, name, subdir
+                )
+            self._one_pdf_to_images(pdf_path, image_main_path, dpi, format)
 
-        try_makedir(image.path)  # 嘗試創建目錄
+    def _try_build_image_main_path(
+        self, image: Path, name: str | None, subdir: bool
+    ) -> Path | None:
+        """
+        Explaination
+        ---
+        如果有 name
+          如果輸入是目錄 : (image / name)
+              如果有 subdir 選項 : (image / name / name)
+          如果輸入是檔案 : (image / name)
+        如果沒有 name
+          如果輸入是目錄 : (image / pdf_path.stem)
+              如果有 subdir 選項 : (image / pdf_path.stem / pdf_path.stem)
+          如果輸入是檔案 : (image / self.path.stem)
 
+        See Also
+        ---
+        + `PdfProcessor._build_image_main_path`
+        """
+        try_makedir(image)  # 嘗試創建目錄
+
+        image_main_path = None
         if name is not None:
-            image_main_path = image.path / name
+            image_main_path = image / name
             if self.path.is_dir() and subdir:
                 try_makedir(image_main_path)  # 嘗試創建目錄
                 image_main_path = image_main_path / name
         elif self.path.is_file():
-            image_main_path = image.path / self.path.stem
+            image_main_path = image / self.path.stem
 
-        for pdf_path in get_filepaths(self.path, suffix=".pdf"):  # 遍歷每一份 PDF
-            if name is None and self.path.is_dir():
-                image_main_path = image.path / pdf_path.stem
-                if subdir:
-                    try_makedir(image_main_path)  # 嘗試創建目錄
-                    image_main_path = image_main_path / pdf_path.stem
-            self._one_pdf_to_images(pdf_path, image_main_path, dpi, format)
+        return image_main_path
+
+    def _build_image_main_path(
+        self, image: Path, pdf_path: Path, name: str | None, subdir: bool
+    ) -> Path:
+        if name is None and self.path.is_dir():
+            image_main_path = image / pdf_path.stem
+            if subdir:
+                try_makedir(image_main_path)  # 嘗試創建目錄
+                image_main_path = image_main_path / pdf_path.stem
+        return image_main_path
 
     def _one_pdf_to_images(
         self, pdf_path: Path, image_main_path: Path, dpi: int, format: str
     ) -> None:
         """
-        pdf 轉 image 輔助函式
+        一份 pdf 轉 image
         """
         with fitz.open(pdf_path) as pdf_file:
 
@@ -104,19 +127,17 @@ class PdfProcessor:
                 page_count = pdf_file.page_count
 
             with self.pbar_class(total=page_count, unit="page") as pbar:
-                for count, page in enumerate(
-                    pdf_file.pages(), start=1
-                ):  # count 為頁數後綴
+                for count, page in enumerate(pdf_file.pages(), start=1):
                     pixmap = page.get_pixmap(dpi=dpi)
                     image_file = Image.open(io.BytesIO(pixmap.tobytes()))
                     image_file.save(f"{image_main_path}-{count}.{format}")  # 儲存圖片
                     pbar.update(1)
 
-    def split(self, output_pdf: PdfProcessor, from_page: int, to_page: int) -> None:
+    def split(self, output_pdf: Path, from_page: int, to_page: int) -> None:
         """
         將 pdf 拆分
         """
-        assert self.path.suffix == ".pdf" and output_pdf.path.suffix == ".pdf"
+        assert self.path.suffix == ".pdf" and output_pdf.suffix == ".pdf"
 
         with fitz.open(self.path) as old_pdf, fitz.open() as new_pdf:
             from_page = zero_base_indexing(from_page, old_pdf.page_count)
@@ -129,10 +150,10 @@ class PdfProcessor:
 
             with self.pbar_class(total=total_pages, unit="page") as pbar:
                 new_pdf.insert_pdf(old_pdf, from_page, to_page)
-                new_pdf.save(output_pdf.path)
+                new_pdf.save(output_pdf)
                 pbar.update(total_pages)
 
-    def merge(self, output_pdf: PdfProcessor) -> None:
+    def merge(self, output_pdf: Path) -> None:
         """
         將 pdf 合併
         """
@@ -151,4 +172,4 @@ class PdfProcessor:
                         new_pdf.insert_pdf(old_pdf)  # 檔案附加 PDF
                     pbar.update(1)
 
-            new_pdf.save(output_pdf.path)
+            new_pdf.save(output_pdf)

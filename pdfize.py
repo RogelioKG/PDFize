@@ -75,7 +75,7 @@ def pdf_to_img(
 ):
     has_pbar: bool = ctx.obj["HAS_PBAR"]
     pdf = PdfProcessor(input_path, pbar_class=CLIPbar if has_pbar else NoPbar)
-    image = ImageProcessor(output_path)
+    image = Path(output_path)
     pdf.to_images(image, dpi, format, name, subdir=subdir)
 
 
@@ -99,7 +99,7 @@ def pdf_to_img(
 def img_to_pdf(ctx: click.Context, input_path: str, output_path: str):
     has_pbar: bool = ctx.obj["HAS_PBAR"]
     image = ImageProcessor(input_path, pbar_class=CLIPbar if has_pbar else NoPbar)
-    pdf = PdfProcessor(output_path)
+    pdf = Path(output_path)
     image.to_pdf(pdf)
 
 
@@ -133,7 +133,7 @@ def pdf_split(
 ):
     has_pbar: bool = ctx.obj["HAS_PBAR"]
     input_pdf = PdfProcessor(input_path, pbar_class=CLIPbar if has_pbar else NoPbar)
-    output_pdf = PdfProcessor(output_path)
+    output_pdf = Path(output_path)
     from_page, to_page = page_range
     input_pdf.split(output_pdf, from_page, to_page)
 
@@ -159,7 +159,7 @@ def pdf_split(
 def pdf_merge(ctx: click.Context, input_path: str, output_path: str):
     has_pbar: bool = ctx.obj["HAS_PBAR"]
     input_pdfs = PdfProcessor(input_path, pbar_class=CLIPbar if has_pbar else NoPbar)
-    output_pdf = PdfProcessor(output_path)
+    output_pdf = Path(output_path)
     input_pdfs.merge(output_pdf)
 
 
