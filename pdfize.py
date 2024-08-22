@@ -52,6 +52,7 @@ def cli(ctx: click.Context, has_pbar: bool):
     "--output",
     "output_path",
     required=True,
+    prompt="Output path",
     type=click.Path(exists=False, file_okay=False, dir_okay=True, resolve_path=True),
     help="Output directory",
 )
@@ -84,6 +85,7 @@ def pdf_to_img(
     "-o",
     "--output",
     "output_path",
+    prompt="Output path",
     type=click.Path(exists=False, file_okay=True, dir_okay=False, resolve_path=True),
     help="Output file",
 )
@@ -109,6 +111,7 @@ def img_to_pdf(ctx: click.Context, input_path: str, output_path: str):
     "--output",
     "output_path",
     required=True,
+    prompt="Output path",
     type=click.Path(exists=False, file_okay=True, dir_okay=False, resolve_path=True),
     help="Output file",
 )
@@ -117,6 +120,7 @@ def img_to_pdf(ctx: click.Context, input_path: str, output_path: str):
     "--range",
     "page_range",
     type=(int, int),
+    prompt="Page range",
     help="Specifies the range of pages to copy using 1-based indexing, with support for negative indices. If the start page is greater than the end page, the pages will be copied in reverse order. Note: '-1' represents the last page",
 )
 @click.argument(
@@ -143,6 +147,7 @@ def pdf_split(
     "-o",
     "--output",
     "output_path",
+    prompt="Output path",
     required=True,
     type=click.Path(exists=False, file_okay=True, dir_okay=False, resolve_path=True),
     help="Output file",

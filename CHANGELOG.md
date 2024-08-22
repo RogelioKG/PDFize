@@ -4,6 +4,14 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
+## [0.3.2] - 2024-08-23
+### Modified
++ **Refactor**
+  + changed param type to `Path` and encapsulated `image_main_path` function
+### Fixed
++ **Bug**
+  + the first argument of `super().__init__` should not be `self`
+
 
 ## [0.3.1] - 2024-08-07
 ### Added
@@ -16,7 +24,7 @@ All notable changes to this project will be documented in this file.
 
 ## [0.3.0] - 2024-08-04
 ### Modified
-+ **Refactoring** : extracted all reusable components from the CLI interface
++ **Refactor** : extracted all reusable components from the CLI interface
 
 
 ## [0.2.1] - 2024-05-10
@@ -43,3 +51,4 @@ All notable changes to this project will be documented in this file.
 [0.2.1]:#0.2.1
 [0.3.0]:#0.3.0
 [0.3.1]:#0.3.1
+[0.3.2]:#0.3.2

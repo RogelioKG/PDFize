@@ -1,5 +1,7 @@
 # PDFize
 
+a command-line tool that converts PDF files into images
+
 ## Third Party Library
   1. `PyMuPDF`
   2. `Pillow`
@@ -96,8 +98,4 @@
     + x
 
 ## To-do Notes
-  + [ ] prompt
-  + [ ] [multiprocessing](https://pymupdf.readthedocs.io/en/latest/recipes-multiprocessing.html)
   + [ ] GUI
-
-## Developer Notes
