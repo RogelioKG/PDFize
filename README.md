@@ -6,6 +6,7 @@
   3. `click`
   4. `tqdm`
   5. `pyinstaller`
+  6. `multiprocessing`
 
 ## Help
 
@@ -96,7 +97,7 @@
 
 ## To-do Notes
   + [ ] prompt
-  + [ ] multi threading
+  + [ ] [multiprocessing](https://pymupdf.readthedocs.io/en/latest/recipes-multiprocessing.html)
   + [ ] GUI
 
 ## Developer Notes
