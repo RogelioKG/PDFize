@@ -1,5 +1,8 @@
 # PDFize
 
+[![badge1](https://img.shields.io/badge/python-3.11.4-blue)](https://www.python.org/downloads/release/python-3114/)
+[![Licence](https://img.shields.io/github/license/RogelioKG/PDFize?style=flat)](./LICENSE) <!-- 軟體授權 -->
+
 a command-line tool that converts PDF files into images
 
 ## Third Party Library
@@ -8,7 +11,6 @@ a command-line tool that converts PDF files into images
   3. `click`
   4. `tqdm`
   5. `pyinstaller`
-  6. `multiprocessing`
 
 ## Help
 
