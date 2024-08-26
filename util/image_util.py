@@ -1,29 +1,18 @@
 # standard library
-from __future__ import annotations
+from pathlib import Path
 from typing import Type
 
 # third party library
 import fitz
-from pathlib import Path
 
 # local library
-from .path_util import *
+from .processor import ImageProcessor
 from .progress_bar import Pbar, NoPbar
 
 
-class ImageProcessor:
-
-    def __init__(self, path: str, *, pbar_class: Type[Pbar] = NoPbar):
-        """
-        Parameters
-        ----------
-        + `path` : str
-            pdf 路徑 (可為目錄或檔案)
-        + `pbar_class`: Type[Pbar]
-            進度條類型
-        """
-        self.path = Path(path)
-        self.pbar_class = pbar_class
+class ImageSingleProcessor(ImageProcessor):
+    def __init__(self, path: str | Path, *, pbar_class: Type[Pbar] = NoPbar):
+        super().__init__(path, pbar_class=pbar_class)
 
     def to_pdf(self, pdf: Path):
         """
@@ -32,13 +21,11 @@ class ImageProcessor:
         assert pdf.suffix == ".pdf"
 
         with fitz.open() as pdf_file:  # 空檔案
-            image_paths = tuple()
 
-            if self.pbar_class == NoPbar:  # 無進度條
-                image_paths = get_filepaths(self.path)
-                total_images = 0
-            else:
-                image_paths = tuple(get_filepaths(self.path))
+            image_paths = self.get_filepaths()  # lazy evaluation
+            total_images = 0
+            if self.pbar_class != NoPbar:  # 有進度條
+                image_paths = tuple(image_paths)
                 total_images = len(image_paths)
 
             with self.pbar_class(total=total_images, unit="image") as pbar:

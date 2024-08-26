@@ -1,9 +1,13 @@
 # PDFize
 
 [![badge1](https://img.shields.io/badge/python-3.11.4-blue)](https://www.python.org/downloads/release/python-3114/)
-[![Licence](https://img.shields.io/github/license/RogelioKG/PDFize?style=flat)](./LICENSE) <!-- 軟體授權 -->
+[![Licence](https://img.shields.io/github/license/RogelioKG/PDFize?style=flat)](./LICENSE)
 
-a command-line tool that converts PDF files into images
+
+## Brief
+Just a simple command-line tool for converting PDF files into images, with support for multiprocessing to enhance performance.
+<!-- GIF -->
+![glucoguard](./demo/pdfize.gif?raw=true)
 
 ## Third Party Library
   1. `PyMuPDF`
@@ -17,6 +21,8 @@ a command-line tool that converts PDF files into images
 + general options
 
   + `--pbar/--no-pbar` : 開啟命令行進度條 (flag)
+
+  + `-s` | `--style` : 進度條樣式
 
 + command
 
@@ -50,9 +56,20 @@ a command-line tool that converts PDF files into images
       pdfize pdf-to-img "input.pdf" -o "imgdir/"
       ```
 
+    + `--parallel` : 開啟多進程平行執行 (flag)
+      ```bash
+      pdfize pdf-to-img "input.pdf" -o "imgdir/" --parallel
+      ```
+
     + `--subdir` : 有多個 pdf 時，以原 pdf 名稱作為子目錄 (flag)
       ```bash
       pdfize pdf-to-img "pdfs_dir/" -o "result/" --subdir
+      ```
+
+    + `-w` | `--worker` : 若有開啟多進程平行執行，選擇使用幾顆 cores 加速
+      > 開很多 process 速度加倍，但會吃非常多記憶體
+      ```bash
+      pdfize pdf-to-img "pdfs_dir/" -o "result/" --parallel -w 4 
       ```
 
   + `split` : PDF 拆分

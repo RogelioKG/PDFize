@@ -4,13 +4,14 @@ __pycache__/
 *$py.class
 
 # Environments
-.venv
+.venv/
 
 # Files
 scripts/auto-test/*.bat
 
 # Directories
 tests/
+.vscode/
 
 # Pyinstaller
 build/

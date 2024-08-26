@@ -1,34 +1,65 @@
+# standard library
+from multiprocessing import freeze_support
+from pathlib import Path
+
 # third party library
 import click
 
 # local library
-from util.image_util import *
-from util.path_util import *
-from util.pdf_util import *
+from util import initializer, PBAR_OUTPUT_LOCK
+from util.image_util import ImageSingleProcessor
+from util.pdf_util import PdfSingleProcessor, PdfParallelProcessor
+from util.progress_bar import *
 
 
 @click.group()
 @click.option(
     "--pbar/--no-pbar",
     "has_pbar",
+    is_flag=True,
     default=True,
     show_default=True,
     help="Enable or disable the CLI progress bar. Use --pbar to enable and --no-pbar to disable",
 )
+@click.option(
+    "-s",
+    "--style",
+    "pbar_style",
+    help="Progress bar style",
+    default=PbarStyle.ASCII_BOX.name,
+    show_default=True,
+    type=click.Choice([item.name for item in PbarStyle]),
+)
 @click.pass_context
-def cli(ctx: click.Context, has_pbar: bool):
+def cli(ctx: click.Context, has_pbar: bool, pbar_style: str):
     ctx.ensure_object(dict)
     ctx.obj["HAS_PBAR"] = has_pbar
+    initializer(PBAR_OUTPUT_LOCK, pbar_style)
 
 
 @cli.command("pdf-to-img", short_help="Convert PDF to image")
+@click.option(
+    "-w",
+    "--workers",
+    "workers",
+    type=int,
+    help="Specifies the number of worker processes to use for multiprocessing. [default: the number of CPU cores]",
+)
+@click.option(
+    "--parallel",
+    "parallel",
+    is_flag=True,
+    default=False,
+    show_default=True,
+    help="Enable parallel processing to speed up PDF processing tasks",
+)
 @click.option(
     "--subdir",
     "subdir",
     is_flag=True,
     default=False,
     show_default=True,
-    help="If this flag is set, use the original PDF filename as the name of subdirectory",
+    help="Use the original PDF filename as the name of subdirectory",
 )
 @click.option(
     "-d", "--dpi", "dpi", type=int, default=100, show_default=True, help="Image DPI"
@@ -70,14 +101,33 @@ def pdf_to_img(
     input_path: str,
     output_path: str,
     subdir: bool,
+    parallel: bool,
+    workers: int | None,
     dpi: int,
     format: str,
     name: str | None = None,
 ):
     has_pbar: bool = ctx.obj["HAS_PBAR"]
-    pdf = PdfProcessor(input_path, pbar_class=CLIPbar if has_pbar else NoPbar)
+    pbar_class = CLIPbar if has_pbar else NoPbar
+
+    # multiprorocessing
+    if parallel:
+        pdf = PdfParallelProcessor(input_path, pbar_class=pbar_class, workers=workers)
+    elif workers is not None:
+        raise click.UsageError(
+            "The '--workers' option requires '--parallel' to be enabled."
+        )
+    else:
+        pdf = PdfSingleProcessor(input_path, pbar_class=pbar_class)
+
+    # mutual exclusion check
+    if name and subdir:
+        raise click.UsageError(
+            "The '--name' and '--subdir' options cannot be used together."
+        )
+
     image = Path(output_path)
-    pdf.to_images(image, dpi, format, name, subdir=subdir)
+    pdf.to_images(image, dpi, format, name=name, subdir=subdir)
 
 
 @cli.command("img-to-pdf", short_help="Convert image to PDF")
@@ -100,7 +150,7 @@ def pdf_to_img(
 @click.pass_context
 def img_to_pdf(ctx: click.Context, input_path: str, output_path: str):
     has_pbar: bool = ctx.obj["HAS_PBAR"]
-    image = ImageProcessor(input_path, pbar_class=CLIPbar if has_pbar else NoPbar)
+    image = ImageSingleProcessor(input_path, pbar_class=CLIPbar if has_pbar else NoPbar)
     pdf = Path(output_path)
     image.to_pdf(pdf)
 
@@ -136,7 +186,9 @@ def pdf_split(
     ctx: click.Context, input_path: str, output_path: str, page_range: tuple[int, int]
 ):
     has_pbar: bool = ctx.obj["HAS_PBAR"]
-    input_pdf = PdfProcessor(input_path, pbar_class=CLIPbar if has_pbar else NoPbar)
+    input_pdf = PdfSingleProcessor(
+        input_path, pbar_class=CLIPbar if has_pbar else NoPbar
+    )
     output_pdf = Path(output_path)
     from_page, to_page = page_range
     input_pdf.split(output_pdf, from_page, to_page)
@@ -163,10 +215,13 @@ def pdf_split(
 @click.pass_context
 def pdf_merge(ctx: click.Context, input_path: str, output_path: str):
     has_pbar: bool = ctx.obj["HAS_PBAR"]
-    input_pdfs = PdfProcessor(input_path, pbar_class=CLIPbar if has_pbar else NoPbar)
+    input_pdfs = PdfSingleProcessor(
+        input_path, pbar_class=CLIPbar if has_pbar else NoPbar
+    )
     output_pdf = Path(output_path)
     input_pdfs.merge(output_pdf)
 
 
 if __name__ == "__main__":
+    freeze_support()  # support freeze executable (if using multiprocessing) on Windows
     cli()
