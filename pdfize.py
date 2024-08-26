@@ -31,7 +31,7 @@ from util.progress_bar import *
     type=click.Choice([item.name for item in PbarStyle]),
 )
 @click.pass_context
-def cli(ctx: click.Context, has_pbar: bool, pbar_style: str):
+def cli(ctx: click.Context, has_pbar: bool, pbar_style: str) -> None:
     ctx.ensure_object(dict)
     ctx.obj["HAS_PBAR"] = has_pbar
     initializer(PBAR_OUTPUT_LOCK, pbar_style)
@@ -106,7 +106,7 @@ def pdf_to_img(
     dpi: int,
     format: str,
     name: str | None = None,
-):
+) -> None:
     has_pbar: bool = ctx.obj["HAS_PBAR"]
     pbar_class = CLIPbar if has_pbar else NoPbar
 
@@ -135,6 +135,7 @@ def pdf_to_img(
     "-o",
     "--output",
     "output_path",
+    required=True,
     prompt="Output path",
     type=click.Path(exists=False, file_okay=True, dir_okay=False, resolve_path=True),
     help="Output file",
@@ -184,7 +185,7 @@ def img_to_pdf(ctx: click.Context, input_path: str, output_path: str):
 @click.pass_context
 def pdf_split(
     ctx: click.Context, input_path: str, output_path: str, page_range: tuple[int, int]
-):
+) -> None:
     has_pbar: bool = ctx.obj["HAS_PBAR"]
     input_pdf = PdfSingleProcessor(
         input_path, pbar_class=CLIPbar if has_pbar else NoPbar
@@ -199,8 +200,8 @@ def pdf_split(
     "-o",
     "--output",
     "output_path",
-    prompt="Output path",
     required=True,
+    prompt="Output path",
     type=click.Path(exists=False, file_okay=True, dir_okay=False, resolve_path=True),
     help="Output file",
 )
@@ -213,7 +214,7 @@ def pdf_split(
     ),
 )
 @click.pass_context
-def pdf_merge(ctx: click.Context, input_path: str, output_path: str):
+def pdf_merge(ctx: click.Context, input_path: str, output_path: str) -> None:
     has_pbar: bool = ctx.obj["HAS_PBAR"]
     input_pdfs = PdfSingleProcessor(
         input_path, pbar_class=CLIPbar if has_pbar else NoPbar

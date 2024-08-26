@@ -23,6 +23,15 @@ Just a simple command-line tool for converting PDF files into images, with suppo
   + `--pbar/--no-pbar` : 開啟命令行進度條 (flag)
 
   + `-s` | `--style` : 進度條樣式
+    ```bash
+    ASCII_GRADIENT :  ░▒▓█
+    ASCII_PIXEL    :  ▖▘▝▗▚▞█
+    ASCII_SQUARE   :  ▨■
+    ASCII_CIRCLE   :  ○◐⬤
+    ASCII_SPEED    :  ▱▰
+    ASCII_DOT      :  ⣀⣦⣿
+    ASCII_BOX      :  ▯▮
+    ```
 
 + command
 
@@ -43,7 +52,7 @@ Just a simple command-line tool for converting PDF files into images, with suppo
 
     + `-f` | `--format` : 指定 image 格式 (預設: png)
       ```bash
-      pdfize pdf-to-img "input.pdf" -o "imgdir/" -e "webp"
+      pdfize pdf-to-img "input.pdf" -o "imgdir/" -f "webp"
       ```
 
     + `-n` | `--name` : 指定 image 主名稱 (預設: 同輸入 pdf 名稱)
@@ -94,27 +103,6 @@ Just a simple command-line tool for converting PDF files into images, with suppo
       ```bash
       pdfize merge "pdfs_dir/" -o "output.pdf"
       ```
-
-## Behaviors
-
-+ PDF -> image
-  + 1 PDF -> 1 image
-    + 路徑：檔案 -> 目錄
-  + 1 PDF -> m images
-    + 路徑：檔案 -> 目錄
-  + m PDFs -> 1 image
-    + x
-  + m PDFs -> m images
-    + 路徑：目錄 -> 目錄
-+ image -> PDF
-  + 1 image -> 1 PDF
-    + 路徑：檔案 -> 檔案
-  + 1 image -> m PDFs
-    + x
-  + m images -> 1 PDF
-    + 路徑：目錄 -> 檔案
-  + m images -> m PDFs
-    + x
 
 ## To-do Notes
   + [ ] GUI

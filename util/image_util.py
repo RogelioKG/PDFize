@@ -11,10 +11,10 @@ from .progress_bar import Pbar, NoPbar
 
 
 class ImageSingleProcessor(ImageProcessor):
-    def __init__(self, path: str | Path, *, pbar_class: Type[Pbar] = NoPbar):
+    def __init__(self, path: str | Path, *, pbar_class: Type[Pbar] = NoPbar) -> None:
         super().__init__(path, pbar_class=pbar_class)
 
-    def to_pdf(self, pdf: Path):
+    def to_pdf(self, pdf: Path) -> None:
         """
         將 image 轉為 pdf
         """

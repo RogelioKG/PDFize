@@ -91,15 +91,16 @@ def divide(page_count: int, workers: int) -> list[tuple[int, int]]:
 def get_pdf_page_count(filepath: str | Path) -> int:
     # 開啟多進程加速多 pdf 且又有 --name 選項時，
     # 為了確保流水號的順序性，逼不得以需開啟 pdf 得知 page_count。
-    # NOTE: 我想或許有更好的做法
+
     doc = fitz.open(filepath)
     page_count = doc.page_count
     doc.close()
+
     return page_count
 
 
 class PdfSingleProcessor(PdfProcessor):
-    def __init__(self, path: str, *, pbar_class: Type[Pbar] = NoPbar):
+    def __init__(self, path: str, *, pbar_class: Type[Pbar] = NoPbar) -> None:
         super().__init__(path, pbar_class=pbar_class)
 
     def _build_image_main_path(
@@ -167,6 +168,11 @@ class PdfSingleProcessor(PdfProcessor):
     ) -> int:
         """
         一份 pdf 轉 image
+
+        Returns
+        -------
+        int
+            下一個起點頁數
         """
         with fitz.open(pdf_path) as pdf_file:
             page_count = pdf_file.page_count
@@ -233,7 +239,7 @@ class PdfParallelProcessor(PdfSingleProcessor):
         *,
         pbar_class: Type[Pbar] = NoPbar,
         workers: int | None = None,
-    ):
+    ) -> None:
         super().__init__(path, pbar_class=pbar_class)
         if workers is None:
             cpu_count = os.cpu_count()
@@ -261,7 +267,12 @@ class PdfParallelProcessor(PdfSingleProcessor):
         if len(pdf_paths) == 1:  # 只有一份 PDF
             original_pdf_path = self.path  # 原先 PDF 路徑
             temp_pdf_dir = self._one_pdf_parallel(
-                image, pdf_paths, dpi, format, name=name or pdf_paths[0].stem, subdir=subdir
+                image,
+                pdf_paths,
+                dpi,
+                format,
+                name=name or pdf_paths[0].stem,
+                subdir=subdir,
             )
             shutil.rmtree(temp_pdf_dir, ignore_errors=True)  # 刪除暫時目錄
             self.path = original_pdf_path  # 回復原先 PDF 路徑
@@ -398,7 +409,7 @@ class PdfParallelProcessor(PdfSingleProcessor):
         + Path
             返回暫時目錄
         """
-        temp_pdf_dir = Path(image / f".tempdir_{uuid.uuid4().hex}")
+        temp_pdf_dir = image / f".tempdir_{uuid.uuid4().hex}"
         try_makedir(temp_pdf_dir)  # 嘗試創建暫時 PDF 目錄
         start_pages = self._split(pdf_paths[0], temp_pdf_dir)  # 拆分 PDF 放到暫時目錄
         self.path = temp_pdf_dir  # PDF 路徑切換至暫時目錄
@@ -410,7 +421,7 @@ class PdfParallelProcessor(PdfSingleProcessor):
             temp_pdf_paths,
             dpi,
             format,
-            name=name,  # 原 PDF 名稱
+            name=name,  # 原 PDF 名稱 (或者自訂名稱)
             subdir=subdir,
             start_pages=start_pages,
         )

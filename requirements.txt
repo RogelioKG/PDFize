@@ -1,5 +1,12 @@
-click
-Pillow
-pyinstaller
-PyMuPDF
-tqdm
+altgraph==0.17.4
+click==8.1.7
+colorama==0.4.6
+packaging==24.0
+pefile==2023.2.7
+pillow==10.3.0
+pyinstaller==6.6.0
+pyinstaller-hooks-contrib==2024.5
+PyMuPDF==1.24.9
+PyMuPDFb==1.24.9
+pywin32-ctypes==0.2.2
+tqdm==4.66.4

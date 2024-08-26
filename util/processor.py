@@ -57,7 +57,7 @@ class Processor:
 
 
 class PdfProcessor(Processor):
-    def __init__(self, path: str, *, pbar_class: Type[Pbar]):
+    def __init__(self, path: str, *, pbar_class: Type[Pbar]) -> None:
         super().__init__(path, pbar_class=pbar_class)
 
     def to_images(
@@ -88,7 +88,7 @@ class PdfProcessor(Processor):
 
 
 class ImageProcessor(Processor):
-    def __init__(self, path: str | Path, *, pbar_class: Type[Pbar]):
+    def __init__(self, path: str | Path, *, pbar_class: Type[Pbar]) -> None:
         super().__init__(path, pbar_class=pbar_class)
 
     def to_pdf(self, pdf: Path):

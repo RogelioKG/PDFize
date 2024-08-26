@@ -18,16 +18,6 @@ class PbarStyle(Enum):
     ASCII_DOT = " ⣀⣦⣿"
     ASCII_BOX = " ▯▮"
 
-    @classmethod
-    def list_all(cls) -> str:
-        """
-        list all available progress bar styles
-        """
-        max_name = max([f"{item.name}" for item in cls], key=len)
-        return "\n\n  ".join(
-            [f"{item.name:{len(max_name) + 1}}: {item.value}" for item in cls]
-        )
-
 
 # 顏色
 class PbarColor(Enum):

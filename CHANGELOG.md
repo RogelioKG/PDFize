@@ -13,7 +13,7 @@ All notable changes to this project will be documented in this file.
   + multiprocessing (`pdf-to-image` command)
 + **CLI**
   + add `--parallel` flag
-  + add `-w` oprion
+  + add `-w` option
 
 
 ## [0.3.2] - 2024-08-23
@@ -60,6 +60,24 @@ All notable changes to this project will be documented in this file.
 ## [0.1.0] - 2024-05-04
 ### Added
 + **Demo**
+  + PDF -> image
+    + 1 PDF -> 1 image
+      + 路徑：檔案 -> 目錄
+    + 1 PDF -> m images
+      + 路徑：檔案 -> 目錄
+    + m PDFs -> 1 image
+      + x
+    + m PDFs -> m images
+      + 路徑：目錄 -> 目錄
+  + image -> PDF
+    + 1 image -> 1 PDF
+      + 路徑：檔案 -> 檔案
+    + 1 image -> m PDFs
+      + x
+    + m images -> 1 PDF
+      + 路徑：目錄 -> 檔案
+    + m images -> m PDFs
+      + x
 
 
 [Unreleased]:#Unreleased
