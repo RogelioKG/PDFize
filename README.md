@@ -1,13 +1,13 @@
 # PDFize
 
-[![badge1](https://img.shields.io/badge/python-3.11.4-blue)](https://www.python.org/downloads/release/python-3114/)
+[![python-version](https://img.shields.io/badge/python-3.11-blue)](https://www.python.org/downloads/release/python-3114/)
 [![Licence](https://img.shields.io/github/license/RogelioKG/PDFize?style=flat)](./LICENSE)
 
 
 ## Brief
 Just a simple command-line tool for converting PDF files into images, with support for multiprocessing to enhance performance.
 <!-- GIF -->
-![glucoguard](./demo/pdfize.gif?raw=true)
+![pdfize](./demo/pdfize.gif?raw=true)
 
 ## Third Party Library
   1. `PyMuPDF`
