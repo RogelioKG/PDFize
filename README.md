@@ -1,7 +1,7 @@
 # PDFize
 
 [![python-version](https://img.shields.io/badge/python-3.11-blue)](https://www.python.org/downloads/release/python-3114/)
-[![Licence](https://img.shields.io/github/license/RogelioKG/PDFize?style=flat)](./LICENSE)
+[![License](https://img.shields.io/github/license/RogelioKG/PDFize?style=flat)](./LICENSE)
 
 
 ## Brief
