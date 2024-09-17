@@ -21,8 +21,8 @@ from .progress_bar import Pbar, NoPbar
 
 def zero_base_indexing(page_num: int, page_count: int) -> int:
     """
-    convert 1-base indexing (support negative `page_num`)
-    to 0-base indexing (positive `page_num` only)
+    將 1-base indexing (which support negative `page_num`) 的頁碼
+    轉為 0-base indexing (which support positive `page_num` only) 的頁碼
 
     Parameters
     ----------
@@ -47,19 +47,19 @@ def zero_base_indexing(page_num: int, page_count: int) -> int:
 
 def divide(page_count: int, workers: int) -> list[tuple[int, int]]:
     """
-    Divides the total number of pages into chunks assigned to each worker.
+    將給定頁數切成數份分給 workers，回傳每個 worker 負責的起終點頁碼
 
     Parameters
     ----------
     + `page_count` : int
-        The total number of pages to be divided.
+        總頁數
     + `workers` : int
-        The number of workers to divide the pages among.
+        有幾個 workers 要分擔工作
 
     Returns
     -------
     + list[tuple[int, int]]
-        A list of tuples, where each tuple represents the start and end pages for each worker, using 1-based indexing.
+        每個 worker 負責的起終點頁碼 (using 1-based indexing)
 
     Example
     -------
@@ -91,7 +91,6 @@ def divide(page_count: int, workers: int) -> list[tuple[int, int]]:
 def get_pdf_page_count(filepath: str | Path) -> int:
     # 開啟多進程加速多 pdf 且又有 --name 選項時，
     # 為了確保流水號的順序性，逼不得以需開啟 pdf 得知 page_count。
-
     doc = fitz.open(filepath)
     page_count = doc.page_count
     doc.close()
@@ -107,14 +106,18 @@ class PdfSingleProcessor(PdfProcessor):
         self, image: Path, pdf_path: Path, name: str | None, subdir: bool
     ) -> Path:
         """
-        Explanation
-        ---
-        如果沒有 name
-          如果輸入是目錄 : (image / pdf_path.stem)
-              如果有 subdir 選項 : (image / pdf_path.stem / pdf_path.stem)
-          如果輸入是檔案 : (image / self.path.stem)
-        如果有 name : (image / name)
+        Returns
+        -------
+        + Path
+            image_main_path
         """
+
+        # Explanation
+        # 如果沒有 name
+        #   如果輸入是目錄 : (image / pdf_path.stem)
+        #     如果有 subdir 選項 : (image / pdf_path.stem / pdf_path.stem)
+        #   如果輸入是檔案 : (image / self.path.stem)
+        # 如果有 name : (image / name)
 
         image_main_path = image
 
@@ -172,7 +175,7 @@ class PdfSingleProcessor(PdfProcessor):
         Returns
         -------
         int
-            下一個起點頁數
+            下一個起點頁碼
         """
         with fitz.open(pdf_path) as pdf_file:
             page_count = pdf_file.page_count
@@ -187,9 +190,7 @@ class PdfSingleProcessor(PdfProcessor):
                 for count, page in enumerate(pdf_file.pages(), start=start):
                     pixmap = page.get_pixmap(dpi=dpi)
                     image_file = Image.open(io.BytesIO(pixmap.tobytes()))
-                    image_path = add_serial(image_main_path, count).with_suffix(
-                        f".{format}"
-                    )
+                    image_path = add_serial(image_main_path, count).with_suffix(f".{format}")
                     image_file.save(image_path)  # 儲存圖片
                     pbar.update(1)
 
@@ -257,7 +258,7 @@ class PdfParallelProcessor(PdfSingleProcessor):
         name: str | None = None,
         subdir: bool,
     ) -> None:
-        """`@Override`
+        """
         將 pdf 轉為 image (multiprocessing)
         """
         assert not (name and subdir)  # mutual exclusion check
@@ -277,9 +278,7 @@ class PdfParallelProcessor(PdfSingleProcessor):
             shutil.rmtree(temp_pdf_dir, ignore_errors=True)  # 刪除暫時目錄
             self.path = original_pdf_path  # 回復原先 PDF 路徑
         else:
-            self._many_pdfs_parallel(
-                image, pdf_paths, dpi, format, name=name, subdir=subdir
-            )
+            self._many_pdfs_parallel(image, pdf_paths, dpi, format, name=name, subdir=subdir)
 
     def _split(self, pdf_path: Path, temp_pdf_dir: Path) -> list[int]:
         """
@@ -325,7 +324,7 @@ class PdfParallelProcessor(PdfSingleProcessor):
         *,
         start: int = 1,
     ) -> None:
-        """`@Override`
+        """
         一份 pdf 轉 image (multiprocessing)
         """
         # 帶著 ID 進場
@@ -358,9 +357,7 @@ class PdfParallelProcessor(PdfSingleProcessor):
             start_pages = [1] * len(pdf_paths)
         elif start_pages is None:  # 有 name 選項的 many pdfs (流水號累加)
             start_pages = list(
-                itertools.accumulate(
-                    [1] + [get_pdf_page_count(pdf_path) for pdf_path in pdf_paths]
-                )
+                itertools.accumulate([1] + [get_pdf_page_count(pdf_path) for pdf_path in pdf_paths])
             )
         else:  # 否則就是被拆分的 one pdf
             pass
@@ -387,9 +384,7 @@ class PdfParallelProcessor(PdfSingleProcessor):
                     )
                 )
 
-            with self.pbar_class(
-                total=len(futures), unit="workers", position=0, main=True
-            ) as pbar:
+            with self.pbar_class(total=len(futures), unit="workers", position=0, main=True) as pbar:
                 for _ in as_completed(futures):
                     pbar.update(1)
 
@@ -409,7 +404,7 @@ class PdfParallelProcessor(PdfSingleProcessor):
         Returns
         -------
         + Path
-            返回暫時目錄
+            暫時目錄路徑
         """
         temp_pdf_dir = image / f".tempdir_{uuid.uuid4().hex}"
         try_makedir(temp_pdf_dir)  # 嘗試創建暫時 PDF 目錄
