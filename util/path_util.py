@@ -23,7 +23,7 @@ def try_makedir(dir_path: str | Path) -> None:
         raise FileExistsError(f"Directory '{os.path.abspath(dir_path)}' not empty.")
 
 
-def add_serial(path: Path, serial: int, *, zfill: bool = False) -> Path:
+def add_serial(path: Path, serial: int, *, width: int = 0) -> Path:
     """
     附加流水號
 
@@ -33,14 +33,12 @@ def add_serial(path: Path, serial: int, *, zfill: bool = False) -> Path:
         路徑
     + `serial` : int
         流水號
-    + `zfill` : bool, optional
-        是否填滿 0
+    + `width` : int
+        流水號寬度
 
     Returns
     -------
     + Path
     """
-    serial_str = str(serial)
-    if zfill:
-        serial_str = serial_str.zfill(16)
+    serial_str = str(serial).zfill(width)
     return path.with_stem(f"{path.stem}-{serial_str}")

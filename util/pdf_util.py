@@ -306,8 +306,10 @@ class PdfParallelProcessor(PdfSingleProcessor):
                     from_page = zero_base_indexing(from_page, page_count)
                     to_page = zero_base_indexing(to_page, page_count)
                     temp_pdf.insert_pdf(old_pdf, from_page, to_page)
+                    # 讀取一個目錄中檔案時，名稱按字典序，因此流水號需補 0
+                    page_digits = len(str(page_count))
                     temp_pdf_name = add_serial(
-                        temp_pdf_dir / pdf_path.stem, from_page, zfill=True
+                        temp_pdf_dir / pdf_path.stem, from_page, width=page_digits
                     ).with_suffix(".pdf")
                     temp_pdf.save(temp_pdf_name)
 
