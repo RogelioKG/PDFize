@@ -111,3 +111,8 @@ Just a simple command-line tool for converting PDF files into images, with suppo
 
 ## To-do Notes
   + [ ] GUI
+
+## Murmuring
+  > 寫完了 `Processor` 和 `Pbar` 之後，\
+  > 才意外發現它倆就是典型的 [Bridge Patterns](https://refactoring.guru/design-patterns/bridge)，\
+  > 哇嗚，太神奇了傑克。
