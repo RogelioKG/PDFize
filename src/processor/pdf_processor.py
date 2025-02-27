@@ -15,7 +15,7 @@ from PIL import Image
 
 # local module
 from .base import Processor
-from src import init, lock
+from src.new_process import init, lock
 from src.util import path_util, pdf_util
 from src.progress_bar.base import Pbar, NoPbar
 
@@ -78,7 +78,7 @@ class PdfSingleProcessor(PdfProcessor):
             if self.path.is_dir():
                 image_main_path = image_main_path / pdf_path.stem
                 if subdir:
-                    pdf_util.try_makedir(image_main_path)
+                    path_util.try_makedir(image_main_path)
                     image_main_path = image_main_path / pdf_path.stem
             elif self.path.is_file():
                 image_main_path = image_main_path / self.path.stem
@@ -100,7 +100,7 @@ class PdfSingleProcessor(PdfProcessor):
         將 pdf 轉為 image
         """
         assert not (name and subdir)  # mutual exclusion check
-        pdf_util.try_makedir(image)  # 嘗試創建 image 目錄
+        path_util.try_makedir(image)  # 嘗試創建 image 目錄
 
         start = 1
         for pdf_path in self.get_filepaths(suffix=".pdf"):  # 遍歷每一份 PDF
@@ -119,7 +119,6 @@ class PdfSingleProcessor(PdfProcessor):
         format: str,
         *,
         start: int = 1,
-        worker_id: int = 0,
         leave: bool = True,
     ) -> int:
         """
@@ -130,6 +129,11 @@ class PdfSingleProcessor(PdfProcessor):
         int
             下一個起點頁碼
         """
+        try:
+            worker_id = mp.current_process()._identity[0] # 多進程
+        except IndexError:
+            worker_id = 0 # 單進程
+        
         with fitz.open(pdf_path) as pdf_file:
             page_count = pdf_file.page_count
 
@@ -272,29 +276,6 @@ class PdfParallelProcessor(PdfSingleProcessor):
             start_pages = [page_range[0] for page_range in page_ranges]
             return start_pages
 
-    def _one_pdf_to_images(
-        self,
-        pdf_path: Path,
-        image_main_path: Path,
-        dpi: int,
-        format: str,
-        *,
-        start: int = 1,
-    ) -> None:
-        """
-        一份 pdf 轉 image (multiprocessing)
-        """
-        # 帶著 ID 進場
-        super()._one_pdf_to_images(
-            pdf_path,
-            image_main_path,
-            dpi,
-            format,
-            start=start,
-            worker_id=mp.current_process()._identity[0],
-            leave=False,
-        )
-
     def _many_pdfs_parallel(
         self,
         image: Path,
@@ -341,6 +322,7 @@ class PdfParallelProcessor(PdfSingleProcessor):
                         dpi,
                         format,
                         start=start,
+                        leave=False,
                     )
                 )
 

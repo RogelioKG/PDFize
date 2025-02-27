@@ -9,6 +9,7 @@ __pycache__/
 # Directories
 .vscode/
 tests/*
+.mypy_cache/
 
 # Pyinstaller
 build/

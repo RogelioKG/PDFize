@@ -41,10 +41,12 @@ class Processor:
         + FileNotFoundError
             路徑不存在所引起的錯誤
         """
+        filepaths: Iterable[Path]
+
         if os.path.isfile(self.path):
             filepaths = (self.path,)
         elif os.path.isdir(self.path):
-            filepaths = map(Path, os.scandir(self.path))
+            filepaths = (Path(entry.path) for entry in os.scandir(self.path))
         else:
             raise FileNotFoundError(f"'{self.path.resolve()}' does not exist.")
 

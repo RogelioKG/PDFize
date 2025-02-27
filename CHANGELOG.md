@@ -4,9 +4,20 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
+## [0.3.4] - 2025-02-28
+### Modify
++ **Refactor**
+  + directory structure
+### Update
++ **Types**
+  + mypy check
+### Add
++ **CLI**
+  + colorized help info
+
 
 ## [0.3.3] - 2024-08-27
-### Added
+### Add
 + **Progress Bar**
   + new color & ascii style
 + **Feature**
@@ -17,19 +28,19 @@ All notable changes to this project will be documented in this file.
 
 
 ## [0.3.2] - 2024-08-23
-### Modified
+### Modify
 + **Refactor**
   + changed param type to `Path` and encapsulated `image_main_path` function
-### Fixed
+### Fix
 + **Mistake**
   + the first argument of `super().__init__` should not be `self`
 
 
 ## [0.3.1] - 2024-08-07
-### Added
+### Add
 + **Progress Bar**
   + optional CLI progress bar
-### Modified
+### Modify
 + **CLI**
   + `--range` option (`merge` command)
     + removed the default value
@@ -37,19 +48,19 @@ All notable changes to this project will be documented in this file.
 
 
 ## [0.3.0] - 2024-08-04
-### Modified
+### Modify
 + **Refactor**
   + extracted all reusable components from the CLI interface
 
 
 ## [0.2.1] - 2024-05-10
-### Added
+### Add
 + **Progress Bar**
   + color - yellow & green & red
 
 
 ## [0.2.0] - 2024-05-05
-### Added
+### Add
 + **CLI**
   + add `--subdir` option (`pdf-to-image` command)
   + add command group
@@ -58,7 +69,7 @@ All notable changes to this project will be documented in this file.
 
 
 ## [0.1.0] - 2024-05-04
-### Added
+### Add
 + **Demo**
   + PDF -> image
     + 1 PDF -> 1 image
@@ -88,3 +99,4 @@ All notable changes to this project will be documented in this file.
 [0.3.1]:#0.3.1
 [0.3.2]:#0.3.2
 [0.3.3]:#0.3.3
+[0.3.4]:#0.3.4
