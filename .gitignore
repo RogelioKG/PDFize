@@ -6,12 +6,9 @@ __pycache__/
 # Environments
 .venv/
 
-# Files
-scripts/auto-test/*.bat
-
 # Directories
-tests/
 .vscode/
+tests/*
 
 # Pyinstaller
 build/
