@@ -5,9 +5,20 @@ from typing import Type
 # third party library
 import fitz
 
-# local library
-from .processor import ImageProcessor
-from .progress_bar import Pbar, NoPbar
+# local module
+from .base import Processor
+from src.progress_bar.base import Pbar, NoPbar
+
+
+class ImageProcessor(Processor):
+    def __init__(self, path: str | Path, *, pbar_class: Type[Pbar]) -> None:
+        super().__init__(path, pbar_class=pbar_class)
+
+    def to_pdf(self, pdf: Path):
+        """
+        將 image 轉為 pdf
+        """
+        raise NotImplementedError
 
 
 class ImageSingleProcessor(ImageProcessor):

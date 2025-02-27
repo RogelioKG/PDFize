@@ -10,3 +10,5 @@ call .venv\Scripts\activate
 
 :: install dependencies
 pip install -r requirements.txt
+
+@echo on

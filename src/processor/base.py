@@ -3,8 +3,8 @@ from pathlib import Path
 from typing import Type, Iterable
 import os
 
-# local library
-from .progress_bar import Pbar
+# local module
+from src.progress_bar.base import Pbar
 
 
 class Processor:
@@ -54,45 +54,3 @@ class Processor:
             filepaths = filter(lambda filepath: filepath.suffix in suffix, filepaths)
 
         return filepaths
-
-
-class PdfProcessor(Processor):
-    def __init__(self, path: str, *, pbar_class: Type[Pbar]) -> None:
-        super().__init__(path, pbar_class=pbar_class)
-
-    def to_images(
-        self,
-        image: Path,
-        dpi: int,
-        format: str,
-        *,
-        name: str | None,
-        subdir: bool,
-    ) -> None:
-        """
-        將 pdf 轉為 image
-        """
-        raise NotImplementedError
-
-    def split(self, output_pdf: Path, from_page: int, to_page: int) -> None:
-        """
-        將 pdf 拆分
-        """
-        raise NotImplementedError
-
-    def merge(self, output_pdf: Path) -> None:
-        """
-        將 pdf 合併
-        """
-        raise NotImplementedError
-
-
-class ImageProcessor(Processor):
-    def __init__(self, path: str | Path, *, pbar_class: Type[Pbar]) -> None:
-        super().__init__(path, pbar_class=pbar_class)
-
-    def to_pdf(self, pdf: Path):
-        """
-        將 image 轉為 pdf
-        """
-        raise NotImplementedError

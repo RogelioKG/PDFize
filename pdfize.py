@@ -1,17 +1,19 @@
 # standard library
-from multiprocessing import freeze_support
+import multiprocessing as mp
 from pathlib import Path
 
 # third party library
 import click
 
-# local library
-from util import initializer
-from util.lock import PBAR_OUTPUT_LOCK
-from util.image_util import ImageSingleProcessor
-from util.pdf_util import PdfSingleProcessor, PdfParallelProcessor
-from util.progress_bar import *
+# local module
+from src import init, lock
+from src.processor.image_processor import ImageSingleProcessor
+from src.processor.pdf_processor import PdfSingleProcessor, PdfParallelProcessor
+from src.progress_bar.enums import PbarStyle
+from src.progress_bar.base import NoPbar
+from src.progress_bar.cli import CLIPbar
 
+# py pdfize.py pdf-to-img "tests/test_data/large_pdf/Design Patterns.pdf" -o tests/test_results/test_pdf_to_img_mp_single --parallel -w 4
 
 @click.group()
 @click.option(
@@ -33,9 +35,9 @@ from util.progress_bar import *
 )
 @click.pass_context
 def cli(ctx: click.Context, has_pbar: bool, pbar_style: str) -> None:
-    initializer(PBAR_OUTPUT_LOCK, pbar_style)
     ctx.ensure_object(dict)
     ctx.obj["HAS_PBAR"] = has_pbar
+    init.initializer(lock.PBAR_OUTPUT_LOCK, pbar_style)
 
 
 @cli.command("pdf-to-img", short_help="Convert PDF to image")
@@ -224,6 +226,6 @@ def pdf_merge(ctx: click.Context, input_path: str, output_path: str) -> None:
     input_pdfs.merge(output_pdf)
 
 
-if __name__ == "__main__": # 只有主進程
-    freeze_support()  # support freeze executable on Windows (if using multiprocessing)
+if __name__ == "__main__":  # 只有主進程
+    mp.freeze_support()  # support freeze executable on Windows (if using multiprocessing)
     cli()
