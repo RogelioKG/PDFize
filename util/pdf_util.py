@@ -13,7 +13,8 @@ from PIL import Image
 import fitz
 
 # local library
-from . import initializer, PBAR_OUTPUT_LOCK
+from . import initializer
+from .lock import PBAR_OUTPUT_LOCK
 from .path_util import *
 from .processor import PdfProcessor
 from .progress_bar import Pbar, NoPbar

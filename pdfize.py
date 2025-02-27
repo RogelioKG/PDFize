@@ -6,7 +6,8 @@ from pathlib import Path
 import click
 
 # local library
-from util import initializer, PBAR_OUTPUT_LOCK
+from util import initializer
+from util.lock import PBAR_OUTPUT_LOCK
 from util.image_util import ImageSingleProcessor
 from util.pdf_util import PdfSingleProcessor, PdfParallelProcessor
 from util.progress_bar import *
@@ -32,9 +33,9 @@ from util.progress_bar import *
 )
 @click.pass_context
 def cli(ctx: click.Context, has_pbar: bool, pbar_style: str) -> None:
+    initializer(PBAR_OUTPUT_LOCK, pbar_style)
     ctx.ensure_object(dict)
     ctx.obj["HAS_PBAR"] = has_pbar
-    initializer(PBAR_OUTPUT_LOCK, pbar_style)
 
 
 @cli.command("pdf-to-img", short_help="Convert PDF to image")
@@ -223,6 +224,6 @@ def pdf_merge(ctx: click.Context, input_path: str, output_path: str) -> None:
     input_pdfs.merge(output_pdf)
 
 
-if __name__ == "__main__":
-    freeze_support()  # support freeze executable (if using multiprocessing) on Windows
+if __name__ == "__main__": # 只有主進程
+    freeze_support()  # support freeze executable on Windows (if using multiprocessing)
     cli()

@@ -1,5 +1,5 @@
 # standard library
-from multiprocessing import RLock
+from multiprocessing.synchronize import RLock
 
 # third party library
 from tqdm import tqdm
@@ -8,17 +8,14 @@ from tqdm import tqdm
 from .progress_bar import CLIPbar
 
 
-PBAR_OUTPUT_LOCK = RLock()
-
-
-def initializer(pbar_output_lock, pbar_style: str) -> None:
+def initializer(pbar_output_lock: RLock, pbar_style: str) -> None:
     """
     新 process 的初始化設定
 
     Parameters
     ----------
     + `pbar_output_lock` : RLock
-        進度條輸出鎖
+        進度條輸出鎖 (由 main process 提供)
     + `pbar_style` : str
         進度條樣式 (See also `progress_bar.PbarStyle`)
     """
