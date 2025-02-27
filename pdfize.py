@@ -13,7 +13,6 @@ from src.progress_bar.enums import PbarStyle
 from src.progress_bar.base import NoPbar
 from src.progress_bar.cli import CLIPbar
 
-# py pdfize.py pdf-to-img "tests/test_data/large_pdf/Design Patterns.pdf" -o tests/test_results/test_pdf_to_img_mp_single --parallel -w 4
 
 @click.group()
 @click.option(
