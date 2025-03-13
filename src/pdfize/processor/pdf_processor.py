@@ -2,26 +2,25 @@
 import concurrent.futures as future
 import io
 import itertools
-import os
-from pathlib import Path
-import shutil
-from typing import Type
 import multiprocessing as mp
+import os
+import shutil
 import uuid
+from pathlib import Path
 
 # third party library
 import fitz
 from PIL import Image
 
 # local module
+from ..new_process import init, lock
+from ..progress_bar.base import NoPbar, Pbar
+from ..util import path_util, pdf_util
 from .base import Processor
-from src.new_process import init, lock
-from src.util import path_util, pdf_util
-from src.progress_bar.base import Pbar, NoPbar
 
 
 class PdfProcessor(Processor):
-    def __init__(self, path: str, *, pbar_class: Type[Pbar]) -> None:
+    def __init__(self, path: str, *, pbar_class: type[Pbar]) -> None:
         super().__init__(path, pbar_class=pbar_class)
 
     def to_images(
@@ -52,7 +51,7 @@ class PdfProcessor(Processor):
 
 
 class PdfSingleProcessor(PdfProcessor):
-    def __init__(self, path: str, *, pbar_class: Type[Pbar] = NoPbar) -> None:
+    def __init__(self, path: str, *, pbar_class: type[Pbar] = NoPbar) -> None:
         super().__init__(path, pbar_class=pbar_class)
 
     def _build_image_main_path(
@@ -130,10 +129,10 @@ class PdfSingleProcessor(PdfProcessor):
             下一個起點頁碼
         """
         try:
-            worker_id = mp.current_process()._identity[0] # 多進程
+            worker_id = mp.current_process()._identity[0]  # 多進程
         except IndexError:
-            worker_id = 0 # 單進程
-        
+            worker_id = 0  # 單進程
+
         with fitz.open(pdf_path) as pdf_file:
             page_count = pdf_file.page_count
 
@@ -147,9 +146,9 @@ class PdfSingleProcessor(PdfProcessor):
                 for count, page in enumerate(pdf_file.pages(), start=start):
                     pixmap = page.get_pixmap(dpi=dpi)
                     image_file = Image.open(io.BytesIO(pixmap.tobytes()))
-                    image_path = path_util.add_serial(
-                        image_main_path, count
-                    ).with_suffix(f".{format}")
+                    image_path = path_util.add_serial(image_main_path, count).with_suffix(
+                        f".{format}"
+                    )
                     image_file.save(image_path)  # 儲存圖片
                     pbar.update(1)
 
@@ -197,7 +196,7 @@ class PdfParallelProcessor(PdfSingleProcessor):
         self,
         path: str,
         *,
-        pbar_class: Type[Pbar] = NoPbar,
+        pbar_class: type[Pbar] = NoPbar,
         workers: int | None = None,
     ) -> None:
         super().__init__(path, pbar_class=pbar_class)
@@ -237,9 +236,7 @@ class PdfParallelProcessor(PdfSingleProcessor):
             shutil.rmtree(temp_pdf_dir, ignore_errors=True)  # 刪除暫時目錄
             self.path = original_pdf_path  # 回復原先 PDF 路徑
         else:
-            self._many_pdfs_parallel(
-                image, pdf_paths, dpi, format, name=name, subdir=subdir
-            )
+            self._many_pdfs_parallel(image, pdf_paths, dpi, format, name=name, subdir=subdir)
 
     def _split(self, pdf_path: Path, temp_pdf_dir: Path) -> list[int]:
         """
@@ -296,8 +293,7 @@ class PdfParallelProcessor(PdfSingleProcessor):
         elif start_pages is None:  # 有 name 選項的 many pdfs (流水號累加)
             start_pages = list(
                 itertools.accumulate(
-                    [1]
-                    + [pdf_util.get_pdf_page_count(pdf_path) for pdf_path in pdf_paths]
+                    [1] + [pdf_util.get_pdf_page_count(pdf_path) for pdf_path in pdf_paths]
                 )
             )
         else:  # 否則就是被拆分的 one pdf
@@ -308,9 +304,8 @@ class PdfParallelProcessor(PdfSingleProcessor):
             initializer=init.initializer,
             initargs=(lock.PBAR_OUTPUT_LOCK, self.pbar_class.style),
         ) as pool:
-
             futures: list[future.Future] = []
-            for start, pdf_path in zip(start_pages, pdf_paths):  # 遍歷每一份 PDF
+            for start, pdf_path in zip(start_pages, pdf_paths, strict=False):  # 遍歷每一份 PDF
                 image_main_path = self._build_image_main_path(
                     image, pdf_path, name, subdir
                 )  # 對被拆分的 one pdf 而言，name 是無流水號的名稱 (或者自訂名稱)
@@ -326,9 +321,7 @@ class PdfParallelProcessor(PdfSingleProcessor):
                     )
                 )
 
-            with self.pbar_class(
-                total=len(futures), unit="workers", position=0, main=True
-            ) as pbar:
+            with self.pbar_class(total=len(futures), unit="workers", position=0, main=True) as pbar:
                 for _ in future.as_completed(futures):
                     pbar.update(1)
 

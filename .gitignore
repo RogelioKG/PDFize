@@ -1,17 +1,12 @@
 # Byte-compiled / optimized / DLL files
 __pycache__/
+.*_cache/
 *.py[cod]
 *$py.class
 
 # Environments
 .venv/
 
-# Directories
-.vscode/
-tests/*
-.mypy_cache/
-
-# Pyinstaller
+# Build
 build/
 dist/
-*.spec

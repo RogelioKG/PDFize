@@ -1,12 +1,11 @@
 # standard library
-from __future__ import annotations
 from types import TracebackType
 
 # third party library
 from tqdm import tqdm
 
 # local module
-from .enums import PbarStyle, PbarColor
+from .enums import PbarColor, PbarStyle
 
 
 class CLIPbar(tqdm):

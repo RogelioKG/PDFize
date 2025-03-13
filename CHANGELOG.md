@@ -4,6 +4,13 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
+## [0.3.5] - 2025-03-13
+### Update
++ **Pypi**
+  + you can use `pip install pdfize` to download this tool now
++ **Package Manager**
+  + switch to `uv`
+
 ## [0.3.4] - 2025-02-28
 ### Modify
 + **Refactor**
@@ -100,3 +107,4 @@ All notable changes to this project will be documented in this file.
 [0.3.2]:#0.3.2
 [0.3.3]:#0.3.3
 [0.3.4]:#0.3.4
+[0.3.5]:#0.3.5**

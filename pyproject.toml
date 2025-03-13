@@ -1,0 +1,61 @@
+[project]
+name = "pdfize"
+version = "0.3.5"
+description = "Just a simple command-line tool for converting PDF files into images, with support for multiprocessing to enhance performance."
+license = { text = "AGPL-3.0" }
+readme = "README.md"
+requires-python = ">=3.11"
+classifiers = [
+    "Environment :: Console",
+    "License :: OSI Approved :: GNU Affero General Public License v3",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.11",
+    "Topic :: Utilities",
+]
+dependencies = [
+    "click>=8.1.8",
+    "click-help-colors>=0.9.4",
+    "pillow>=11.1.0",
+    "pymupdf==1.24.9",
+    "tqdm>=4.67.1",
+]
+
+[dependency-groups]
+dev = ["pre-commit>=4.1.0", "ruff>=0.9.10"]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project.urls]
+Repository = "https://github.com/rogeliokg/pdfize"
+
+[project.scripts]
+pdfize = "pdfize.__main__:pdfize"
+
+[[tool.uv.index]]
+name = "pypi"
+url = "https://pypi.org/simple/"
+publish-url = "https://upload.pypi.org/legacy/"
+
+[[tool.uv.index]]
+name = "testpypi"
+url = "https://test.pypi.org/simple/"
+publish-url = "https://test.pypi.org/legacy/"
+
+[tool.ruff]
+line-length = 100
+target-version = "py311"
+
+[tool.ruff.lint]
+select = [
+    "E",  # pycodestyle errors (與 PEP 8 標準不符的錯誤)
+    "W",  # pycodestyle warnings (與 PEP 8 標準不符的警告)
+    "F",  # pyflakes (檢查未使用的變數或模組等)
+    "C",  # flake8-comprehensions (簡潔表達式)
+    "B",  # flake8-bugbear (可揪出 mutable default arguments 等 BUG)
+    "UP", # pyupgrade (舊語法升級)
+]
+
+[tool.ruff.format]
+quote-style = "double"

@@ -1,5 +1,4 @@
 # standard library
-from __future__ import annotations
 from types import TracebackType
 from typing import Protocol
 
@@ -9,7 +8,7 @@ class Pbar(Protocol):
 
     def __init__(self, *args, **kwargs) -> None: ...
 
-    def __enter__(self) -> Pbar: ...
+    def __enter__(self) -> "Pbar": ...
 
     def __exit__(
         self,
@@ -28,7 +27,7 @@ class NoPbar:
         """Dummy 進度條"""
         pass
 
-    def __enter__(self) -> NoPbar:
+    def __enter__(self) -> "NoPbar":
         return self
 
     def __exit__(

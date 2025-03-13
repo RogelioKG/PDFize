@@ -5,7 +5,7 @@ from multiprocessing.synchronize import RLock
 from tqdm import tqdm
 
 # local module
-from src.progress_bar.cli import CLIPbar
+from ..progress_bar.cli import CLIPbar
 
 
 def initializer(pbar_output_lock: RLock, pbar_style: str) -> None:

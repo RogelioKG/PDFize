@@ -1,14 +1,14 @@
 # standard library
-from pathlib import Path
-from typing import Type, Iterable
 import os
+from collections.abc import Iterable
+from pathlib import Path
 
 # local module
-from src.progress_bar.base import Pbar
+from ..progress_bar.base import Pbar
 
 
 class Processor:
-    def __init__(self, path: str | Path, *, pbar_class: Type[Pbar]) -> None:
+    def __init__(self, path: str | Path, *, pbar_class: type[Pbar]) -> None:
         """
         Parameters
         ----------
