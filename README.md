@@ -1,7 +1,9 @@
 # PDFize
-
-[![python-version](https://img.shields.io/badge/python-3.11-blue)](https://www.python.org/downloads/release/python-3114/)
-[![License](https://img.shields.io/github/license/RogelioKG/PDFize?style=flat)](./LICENSE)
+[![uv](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/uv/main/assets/badge/v0.json)](https://github.com/astral-sh/uv)
+[![ruff](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/ruff/main/assets/badge/v2.json)](https://github.com/astral-sh/ruff)
+![PyPI - Version](https://img.shields.io/pypi/v/pdfize)
+[![PyPI - License](https://img.shields.io/pypi/l/pdfize.svg)](./LICENSE)
+[![PyPI - Python Version](https://img.shields.io/pypi/pyversions/pdfize.svg)](https://pypi.python.org/pypi/pdfize)
 
 ## Brief
 Just a simple command-line tool for converting PDF files into images, with support for multiprocessing to enhance performance.
